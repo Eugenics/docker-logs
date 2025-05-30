@@ -1,0 +1,44 @@
+sources:
+  docker-logs:
+    type: docker_logs
+    docker_host: "unix:///var/run/docker.sock"
+
+transforms:
+  docker-logs-transform:
+    type: "remap"
+    inputs:
+      - docker-logs
+    drop_on_error: false
+    source: |
+      .container_created_at = format_timestamp!(parse_timestamp!(.container_created_at,"%Y-%m-%dT%H:%M:%S%.f%:z"),"%Y-%m-%d %H:%M:%S%.f")
+      .timestamp = format_timestamp!(parse_timestamp!(.timestamp,"%Y-%m-%dT%H:%M:%S%.fZ"),"%Y-%m-%d %H:%M:%S%.f")
+      message = parse_key_value!(.message)
+      .parsed_message = message
+      if is_empty(string!(.parsed_message.level)) {
+        .level = "info"
+      } else {
+        .level = .parsed_message.level
+      }
+      .message = encode_json(.parsed_message)
+
+sinks:
+  out-log-json:
+    type: file
+    encoding:
+      codec: "json"
+    inputs:
+      - docker-logs-transform
+    path: /var/log/out/docker_logs-%Y-%m-%d.log
+  out-log-clickhouse:
+    type: clickhouse
+    inputs:
+      - docker-logs-transform
+    database: ${CLICKHOUSE_DATABASE}
+    endpoint: ${CLICKHOUSE_SCHEMA}://${CLICKHOUSE_HOST}:${CLICKHOUSE_PORT}
+    format: json_each_row
+    table: docker_logs
+    skip_unknown_fields: true
+    auth:
+      strategy: "basic"
+      user: ${CLICKHOUSE_USER}
+      password: ${CLICKHOUSE_PASSWORD}

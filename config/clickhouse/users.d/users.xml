@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<yandex>
+    <users>
+        <default remove="remove"/>
+        <user>
+            <networks>
+                <ip>::/0</ip>
+            </networks>
+            <profile>default</profile>
+            <quota>default</quota>
+            <password_sha256_hex>f57473ae70dbce15b32136620e0d61496a2c9e4c437b3c7f1e21932c6c29e37f</password_sha256_hex>
+            <allow_databases>
+                <database>default</database>
+            </allow_databases>
+        </user>
+    </users>
+</yandex>

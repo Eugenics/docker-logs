@@ -1,0 +1,70 @@
+version: "3.9"
+
+services:
+  clickhouse:
+    image: yandex/clickhouse-server
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: any
+    environment:
+      CLH_USER: ${CLICKHOUSE_USER}
+      CLH_PASSWORD: ${CLICKHOUSE_PASSWORD}
+    ports:
+      - "8123:8123"
+    volumes:
+      - ./config/clickhouse/users.d/users.xml:/etc/clickhouse-server/users.d/users.xml:ro
+      - ./var/clickhouse/var/lib:/var/lib/clickhouse
+      - ./var/clickhouse/var/log:/var/log/clickhouse-server
+    networks:
+      - logs
+  
+  vector:
+    image: timberio/vector:nightly-alpine
+    deploy:
+      mode: global
+      restart_policy:
+        condition: any
+    environment:
+      - CLICKHOUSE_SCHEMA=http
+      - CLICKHOUSE_HOST=clickhouse-clickhouse-1
+      - CLICKHOUSE_DATABASE=default
+      - CLICKHOUSE_PORT=8123
+      - CLICKHOUSE_USER=user
+
+
+
+      - CLICKHOUSE_PASSWORD=Blf/ucVT
+      - DOCKER_HOST="unix:///var/run/docker.sock"
+    volumes:
+      - ./config/vector/vector.yaml:/etc/vector/vector.yaml:ro
+      - ./var/vector/out:/var/log/out
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - logs
+
+  grafana:
+    image: grafana/grafana:main-ubuntu
+    deploy:
+      mode: global
+      restart_policy:
+        condition: any
+    ports:
+     - '3000:3000'
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource,grafana-clock-panel,grafana-worldmap-panel,natel-plotly-panel
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - logs
+
+networks:
+  logs:
+    external: true
+
+volumes:
+  grafana-storage: {}

@@ -1,0 +1,313 @@
+{
+    "annotations": {
+        "list": [
+            {
+                "builtIn": 1,
+                "datasource": {
+                    "type": "grafana",
+                    "uid": "-- Grafana --"
+                },
+                "enable": true,
+                "hide": true,
+                "iconColor": "rgba(0, 211, 255, 1)",
+                "name": "Annotations & Alerts",
+                "type": "dashboard"
+            }
+        ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 1,
+    "links": [],
+    "panels": [
+        {
+            "datasource": {
+                "type": "grafana-clickhouse-datasource",
+                "uid": "aeney1bmg3474e"
+            },
+            "fieldConfig": {
+                "defaults": {
+                    "color": {
+                        "mode": "thresholds"
+                    },
+                    "mappings": [],
+                    "thresholds": {
+                        "mode": "absolute",
+                        "steps": [
+                            {
+                                "color": "green",
+                                "value": 0
+                            },
+                            {
+                                "color": "red",
+                                "value": 80
+                            }
+                        ]
+                    }
+                },
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 4,
+                "w": 4,
+                "x": 0,
+                "y": 0
+            },
+            "id": 2,
+            "options": {
+                "colorMode": "value",
+                "graphMode": "area",
+                "justifyMode": "auto",
+                "orientation": "auto",
+                "percentChangeColorMode": "standard",
+                "reduceOptions": {
+                    "calcs": [
+                        "lastNotNull"
+                    ],
+                    "fields": "",
+                    "values": false
+                },
+                "showPercentChange": false,
+                "textMode": "auto",
+                "wideLayout": true
+            },
+            "pluginVersion": "12.1.0-246349",
+            "targets": [
+                {
+                    "editorType": "sql",
+                    "format": 1,
+                    "meta": {
+                        "builderOptions": {
+                            "columns": [],
+                            "database": "",
+                            "limit": 1000,
+                            "mode": "list",
+                            "queryType": "table",
+                            "table": ""
+                        }
+                    },
+                    "pluginVersion": "4.9.0",
+                    "queryType": "table",
+                    "rawSql": "SELECT\r\ncount() cnt\r\nFROM \"default\".\"docker_logs\"\r\nWHERE ( timestamp >= $__fromTime AND timestamp <= $__toTime )\r\n  and level = 'error';",
+                    "refId": "A"
+                }
+            ],
+            "title": "Errors count",
+            "type": "stat"
+        },
+        {
+            "datasource": {
+                "type": "grafana-clickhouse-datasource",
+                "uid": "aeney1bmg3474e"
+            },
+            "fieldConfig": {
+                "defaults": {},
+                "overrides": []
+            },
+            "gridPos": {
+                "h": 14,
+                "w": 24,
+                "x": 0,
+                "y": 4
+            },
+            "id": 1,
+            "options": {
+                "dedupStrategy": "none",
+                "enableInfiniteScrolling": false,
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": false,
+                "showTime": true,
+                "sortOrder": "Descending",
+                "wrapLogMessage": false
+            },
+            "pluginVersion": "12.1.0-246349",
+            "targets": [
+                {
+                    "builderOptions": {
+                        "columns": [
+                            {
+                                "alias": "message",
+                                "custom": false,
+                                "name": "message",
+                                "type": "String"
+                            },
+                            {
+                                "alias": "container_name",
+                                "custom": false,
+                                "name": "container_name",
+                                "type": "String"
+                            },
+                            {
+                                "alias": "timestamp",
+                                "hint": "time",
+                                "name": "timestamp",
+                                "type": "DateTime64(6, 'UTC')"
+                            },
+                            {
+                                "alias": "level",
+                                "hint": "log_level",
+                                "name": "level",
+                                "type": "String"
+                            },
+                            {
+                                "alias": "message",
+                                "hint": "log_message",
+                                "name": "message",
+                                "type": "String"
+                            },
+                            {
+                                "alias": "id",
+                                "hint": "log_labels",
+                                "name": "id",
+                                "type": "UUID"
+                            }
+                        ],
+                        "database": "default",
+                        "filters": [
+                            {
+                                "condition": "AND",
+                                "filterType": "custom",
+                                "hint": "time",
+                                "key": "",
+                                "operator": "WITH IN DASHBOARD TIME RANGE",
+                                "type": "datetime"
+                            },
+                            {
+                                "condition": "AND",
+                                "filterType": "custom",
+                                "hint": "log_level",
+                                "key": "",
+                                "operator": "IS ANYTHING",
+                                "type": "string"
+                            }
+                        ],
+                        "limit": 1000,
+                        "meta": {
+                            "logMessageLike": "",
+                            "otelVersion": "latest"
+                        },
+                        "mode": "list",
+                        "orderBy": [
+                            {
+                                "default": true,
+                                "dir": "DESC",
+                                "hint": "time",
+                                "name": ""
+                            }
+                        ],
+                        "queryType": "logs",
+                        "table": "docker_logs"
+                    },
+                    "datasource": {
+                        "type": "grafana-clickhouse-datasource",
+                        "uid": "aeney1bmg3474e"
+                    },
+                    "editorType": "sql",
+                    "format": 2,
+                    "meta": {
+                        "builderOptions": {
+                            "columns": [
+                                {
+                                    "alias": "message",
+                                    "custom": false,
+                                    "name": "message",
+                                    "type": "String"
+                                },
+                                {
+                                    "alias": "container_name",
+                                    "custom": false,
+                                    "name": "container_name",
+                                    "type": "String"
+                                },
+                                {
+                                    "alias": "timestamp",
+                                    "hint": "time",
+                                    "name": "timestamp",
+                                    "type": "DateTime64(6, 'UTC')"
+                                },
+                                {
+                                    "alias": "level",
+                                    "hint": "log_level",
+                                    "name": "level",
+                                    "type": "String"
+                                },
+                                {
+                                    "alias": "message",
+                                    "hint": "log_message",
+                                    "name": "message",
+                                    "type": "String"
+                                },
+                                {
+                                    "alias": "id",
+                                    "hint": "log_labels",
+                                    "name": "id",
+                                    "type": "UUID"
+                                }
+                            ],
+                            "database": "default",
+                            "filters": [
+                                {
+                                    "condition": "AND",
+                                    "filterType": "custom",
+                                    "hint": "time",
+                                    "key": "",
+                                    "operator": "WITH IN DASHBOARD TIME RANGE",
+                                    "type": "datetime"
+                                },
+                                {
+                                    "condition": "AND",
+                                    "filterType": "custom",
+                                    "hint": "log_level",
+                                    "key": "",
+                                    "operator": "IS ANYTHING",
+                                    "type": "string"
+                                }
+                            ],
+                            "limit": 1000,
+                            "meta": {
+                                "logMessageLike": "",
+                                "otelVersion": "latest"
+                            },
+                            "mode": "list",
+                            "orderBy": [
+                                {
+                                    "default": true,
+                                    "dir": "DESC",
+                                    "hint": "time",
+                                    "name": ""
+                                }
+                            ],
+                            "queryType": "logs",
+                            "table": "docker_logs"
+                        }
+                    },
+                    "pluginVersion": "4.9.0",
+                    "queryType": "logs",
+                    "rawSql": "SELECT timestamp, message as \"body\", level, id as \"labels\",\r\n simpleJSONExtractString(message, 'msg') as msg,\r\n message\r\nFROM \"default\".\"docker_logs\"\r\nWHERE ( timestamp >= $__fromTime AND timestamp <= $__toTime )\r\n  AND level = 'error'\r\nORDER BY timestamp DESC",
+                    "refId": "A"
+                }
+            ],
+            "title": "Errors",
+            "transparent": true,
+            "type": "logs"
+        }
+    ],
+    "preload": false,
+    "schemaVersion": 41,
+    "tags": [],
+    "templating": {
+        "list": []
+    },
+    "time": {
+        "from": "now-5m",
+        "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "browser",
+    "title": "Docker logs",
+    "uid": "72b89118-4f11-4063-9c7b-bc8b7db4e062",
+    "version": 15
+}
